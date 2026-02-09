@@ -452,6 +452,115 @@ body::after {
 .animate-in:nth-child(5) { animation-delay: 0.32s; }
 
 /* ── Responsive ── */
+/* ── Highlight card (Menú PRO) ── */
+.menu__card--highlight {
+  border-color: rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.04);
+}
+
+.menu__card--highlight:hover,
+.menu__card--highlight:active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 8px 32px rgba(0, 229, 255, 0.15);
+}
+
+/* ── Wide app for table pages ── */
+.app--wide {
+  max-width: 900px;
+}
+
+/* ── Menu Table ── */
+.menu-table-section {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: -0.25rem;
+  padding: 0.25rem;
+}
+
+.menu-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+}
+
+.menu-table thead th {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+  text-align: left;
+  padding: 0.75rem 0.6rem;
+  border-bottom: 2px solid rgba(0, 229, 255, 0.2);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--bg-dark);
+}
+
+.menu-table__day-col {
+  width: 80px;
+}
+
+.menu-table tbody td {
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-weight: 300;
+  line-height: 1.4;
+  vertical-align: top;
+}
+
+.menu-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.menu-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.menu-table__day {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  color: var(--accent-hot);
+  white-space: nowrap;
+}
+
+.menu-table__empty {
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.menu-table__free td:not(.menu-table__day):not(.menu-table__empty) {
+  color: var(--accent-orange);
+  font-style: italic;
+}
+
+.menu-table__tip {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 300;
+}
+
+@media (min-width: 750px) {
+  .menu-table__tip {
+    display: none;
+  }
+}
+
+/* ── Responsive ── */
 @media (min-width: 600px) {
   .app {
     padding: 3rem 2rem 4rem;
