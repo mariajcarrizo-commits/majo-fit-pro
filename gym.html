@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rutina Gym · MAJO-FIT PRO</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
+</head>
+<body>
+  <div class="app">
+
+    <a href="index.html" class="back-link animate-in">← Volver al menú</a>
+
+    <div class="routine">
+
+      <header class="routine__header animate-in">
+        <div class="routine__emoji">🏋️</div>
+        <h1 class="routine__title">Rutina Gym</h1>
+        <p class="routine__subtitle">Con equipamiento · 30 seg descanso</p>
+      </header>
+
+      <!-- TIMER -->
+      <section class="timer-section animate-in">
+        <div class="timer__ring-wrap">
+          <svg class="timer__ring" width="140" height="140" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff2d55"/>
+                <stop offset="100%" stop-color="#ff6b35"/>
+              </linearGradient>
+            </defs>
+            <circle class="timer__ring-bg" cx="60" cy="60" r="54"/>
+            <circle class="timer__ring-progress" id="timer-ring-progress" cx="60" cy="60" r="54"/>
+          </svg>
+          <div class="timer__time-inner">
+            <div class="timer__display" id="timer-display">30</div>
+          </div>
+        </div>
+        <div class="timer__controls">
+          <button class="btn btn--start" id="btn-start">START</button>
+          <button class="btn btn--reset" id="btn-reset">↺</button>
+        </div>
+        <p class="timer__label">Descanso entre ejercicios</p>
+      </section>
+
+      <!-- EJERCICIOS — Editá esta lista con tu rutina -->
+      <section class="exercises animate-in">
+        <h2 class="exercises__title">📋 Ejercicios</h2>
+        <ol class="exercises__list">
+          <li class="exercises__item">
+            <span class="exercises__num">01</span>
+            <div>
+              <div class="exercises__text">Press de banca</div>
+              <div class="exercises__detail">4 x 10 reps</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">02</span>
+            <div>
+              <div class="exercises__text">Sentadillas con barra</div>
+              <div class="exercises__detail">4 x 10 reps</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">03</span>
+            <div>
+              <div class="exercises__text">Peso muerto rumano</div>
+              <div class="exercises__detail">3 x 12 reps</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">04</span>
+            <div>
+              <div class="exercises__text">Remo con mancuerna</div>
+              <div class="exercises__detail">3 x 12 c/lado</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">05</span>
+            <div>
+              <div class="exercises__text">Press militar</div>
+              <div class="exercises__detail">3 x 10 reps</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">06</span>
+            <div>
+              <div class="exercises__text">Curl de bíceps</div>
+              <div class="exercises__detail">3 x 12 reps</div>
+            </div>
+          </li>
+          <li class="exercises__item">
+            <span class="exercises__num">07</span>
+            <div>
+              <div class="exercises__text">Extensión de tríceps</div>
+              <div class="exercises__detail">3 x 12 reps</div>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+    </div>
+
+    <footer class="footer animate-in">
+      <p class="footer__text">MAJO-FIT PRO · 2025</p>
+    </footer>
+
+  </div>
+
+  <audio id="beep" src="beep.m4a" preload="auto"></audio>
+  <script src="timer.js"></script>
+</body>
+</html>
