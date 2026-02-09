@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Rutina PRO · MAJO-FIT PRO</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+</head>
+<body>
+  <div class="app app--wide">
+
+    <a href="index.html" class="back-link animate-in">← Volver al menú</a>
+
+    <header class="routine__header animate-in">
+      <div class="routine__emoji">🏋️</div>
+      <h1 class="routine__title">Rutina PRO</h1>
+      <p class="routine__subtitle">Tu plan semanal completo</p>
+    </header>
+
+    <!-- TIMER -->
+    <section class="timer-section animate-in">
+      <div class="timer__ring-wrap">
+        <svg class="timer__ring" width="140" height="140" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff2d55"/>
+              <stop offset="100%" stop-color="#ff6b35"/>
+            </linearGradient>
+          </defs>
+          <circle class="timer__ring-bg" cx="60" cy="60" r="54"/>
+          <circle class="timer__ring-progress" id="timer-ring-progress" cx="60" cy="60" r="54"/>
+        </svg>
+        <div class="timer__time-inner">
+          <div class="timer__display" id="timer-display">00:00</div>
+        </div>
+      </div>
+      <div class="timer__controls">
+        <button class="btn btn--start" id="btn-start">START</button>
+        <button class="btn btn--reset" id="btn-reset">↺</button>
+      </div>
+      <div class="timer-presets" id="timer-presets">
+        <button class="btn btn--preset" data-seconds="30">30s</button>
+        <button class="btn btn--preset" data-seconds="45">45s</button>
+        <button class="btn btn--preset" data-seconds="60">1 min</button>
+        <button class="btn btn--preset" data-seconds="90">1:30</button>
+        <button class="btn btn--preset" data-seconds="120">2 min</button>
+        <button class="btn btn--preset" data-seconds="180">3 min</button>
+      </div>
+      <p class="timer__label">Elegí tu descanso</p>
+    </section>
+
+    <!-- DAY SELECTOR -->
+    <div class="day-selector animate-in" id="daySelector"></div>
+
+    <!-- ROUTINE CONTENT -->
+    <div id="routine-content" class="animate-in"></div>
+
+    <!-- RESET BUTTON -->
+    <button class="btn btn--danger animate-in" id="btn-reset-day" style="display:none;">🔄 Reiniciar Día</button>
+
+  </div>
+
+  <audio id="beep" src="beep.m4a" preload="auto"></audio>
+
+  <script>
+    /* ═══════════════════════════════════
+       PLAN PRO — RUTINAS POR DÍA
+    ═══════════════════════════════════ */
+    const PLAN = [
+      {
+        id: "d1", label: "LUN",
+        title: "🍑 Lunes — Glúteos + Femoral (HEAVY)",
+        hints: ["Objetivo: tensión real + progresión. Descanso 90s.", "Finisher banda ANTES del cardio.", "Cervical friendly: nada sobre hombros."],
+        blocks: [
+          { name: "🔥 Fuerza (PRO)", items: [
+            { text: "Hip Thrust (barra o corebag) — 4x8-10", sets: 4 },
+            { text: "Peso muerto rumano — 4x8-10", sets: 4 },
+            { text: "Curl femoral máquina — 4x10-12", sets: 4 },
+            { text: "Patada glúteo máquina (kickback) — 4x10-12", sets: 4 },
+            { text: "Abducción banda — 4x20", sets: 4 }
+          ]},
+          { name: "🔥 Finisher banda (x2)", items: [
+            { text: "Abducciones banda — 20", sets: 2 },
+            { text: "Puente glúteos con banda — 20", sets: 2 }
+          ]},
+          { name: "🚴 Cardio Zona 2", items: [
+            { text: "Bici — 20 a 25 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d2", label: "MAR",
+        title: "🏋️ Martes — Superior + Core (sin poleas)",
+        hints: ["Postura fuerte: hombros atrás, cuello relajado.", "TRX + mancuernas + banda.", "ABS: calidad, no cantidad."],
+        blocks: [
+          { name: "💪 Superior", items: [
+            { text: "TRX Remo (agarre neutro) — 4x10-12", sets: 4 },
+            { text: "Press pecho con mancuernas en banco — 4x10", sets: 4 },
+            { text: "Vuelos laterales — 4x12-15", sets: 4 },
+            { text: "Face pull con banda — 4x15", sets: 4 },
+            { text: "Fondos en banco/caja — 3x12-15", sets: 3 },
+            { text: "Bíceps — 3x12", sets: 3 }
+          ]},
+          { name: "🧠 Core (3x)", items: [
+            { text: "Plancha — 40 seg", sets: 3 },
+            { text: "Dead bug — 12/12", sets: 3 }
+          ]},
+          { name: "🚣 Cardio Zona 2", items: [
+            { text: "Remo — 15 a 20 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d3", label: "MIÉ",
+        title: "🦵 Miércoles — Pierna + Glúteo (PRENSA + BÚLGARAS)",
+        hints: ["Prensa manda. Búlgaras te definen sin barra.", "Descanso 90s en Prensa y Búlgaras.", "Bajada lenta, subida fuerte."],
+        blocks: [
+          { name: "🔥 Pierna (PRO)", items: [
+            { text: "Prensa — 4x10-12", sets: 4 },
+            { text: "Búlgaras con mancuernas — 4x10 por pierna", sets: 4 },
+            { text: "Extensión cuádriceps — 4x12-15", sets: 4 },
+            { text: "Step ups en caja (con peso) — 3x10 por pierna", sets: 3 },
+            { text: "Patada glúteo máquina — 3x12 por pierna", sets: 3 },
+            { text: "Abducción banda — 3x20", sets: 3 }
+          ]},
+          { name: "🚴 Cardio Zona 2", items: [
+            { text: "Bici — 25 a 30 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d4", label: "JUE",
+        title: "🏋️ Jueves — Superior + Core (variación)",
+        hints: ["Todo con mancuernas + banda + TRX.", "Nada de cargas sobre hombros (cervical friendly).", "Descanso 60–90s."],
+        blocks: [
+          { name: "💪 Superior", items: [
+            { text: "Remo — 4x10-12", sets: 4 },
+            { text: "Sentadilla sumo — 4x10", sets: 4 },
+            { text: "Fondo — 3x12", sets: 3 },
+            { text: "TRX — 3x15", sets: 3 },
+            { text: "Tríceps (pushdown) — 3x15", sets: 3 },
+            { text: "Curl martillo mancuernas — 3x12", sets: 3 }
+          ]},
+          { name: "🧠 Core (3x)", items: [
+            { text: "Plancha lateral — 30 seg por lado", sets: 3 },
+            { text: "Crunch corto controlado — 15", sets: 3 }
+          ]},
+          { name: "🚶 Cardio suave", items: [
+            { text: "Caminadora inclinación — 20 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d5", label: "VIE",
+        title: "🍑 Viernes — Lower + Pump + Finisher (glúteo killer)",
+        hints: ["Este día es el 'cierre de semana': bomba + técnica.", "Descanso 60–90s.", "Finisher ANTES del cardio."],
+        blocks: [
+          { name: "🔥 Lower (PRO)", items: [
+            { text: "Peso muerto rumano — 4x10", sets: 4 },
+            { text: "Hip thrust (barra o corebag) — 4x10-12", sets: 4 },
+            { text: "Prensa (pies altos) — 3x12", sets: 3 },
+            { text: "Curl femoral máquina — 3x12", sets: 3 },
+            { text: "Patada glúteo máquina — 3x12 por pierna", sets: 3 }
+          ]},
+          { name: "🔥 Finisher (x2)", items: [
+            { text: "Abducción banda — 25", sets: 2 },
+            { text: "Puente glúteos con banda — 25", sets: 2 },
+            { text: "Step ups (sin peso) — 20 total", sets: 2 }
+          ]},
+          { name: "🚴 Cardio Zona 2", items: [
+            { text: "Bici — 20 a 25 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d6", label: "SÁB",
+        title: "✨ Sábado — Activo (recuperación inteligente)",
+        hints: ["Esto NO es vagancia: es estrategia.", "Tu cuerpo se adapta cuando descansás.", "Objetivo: movilidad + circulación."],
+        blocks: [
+          { name: "🧘 Movilidad (1x)", items: [
+            { text: "Movilidad cadera + glúteo — 10 min", sets: 1 },
+            { text: "Movilidad espalda + cuello suave — 8 min", sets: 1 },
+            { text: "Caminata — 30 min", sets: 1 }
+          ]}
+        ]
+      },
+      {
+        id: "d7", label: "DOM",
+        title: "😴 Domingo — Descanso total",
+        hints: ["Tu cuerpo crece y se define acá.", "Hidratación + proteína + sueño.", "Nada de culpa."],
+        blocks: [
+          { name: "🧠 Reset", items: [
+            { text: "Descanso total + pasos suaves", sets: 1 }
+          ]}
+        ]
+      }
+    ];
+
+    /* ═══════════════════════════════════
+       TIMER PRO (con ring SVG + presets)
+    ═══════════════════════════════════ */
+    const CIRCUMFERENCE = 2 * Math.PI * 54;
+    let timerInterval = null;
+    let remainingTime = 0;
+    let totalTime = 0;
+    let isRunning = false;
+
+    const displayEl = () => document.getElementById('timer-display');
+    const ringEl = () => document.getElementById('timer-ring-progress');
+
+    function initRing() {
+      const r = ringEl();
+      if (r) {
+        r.style.strokeDasharray = CIRCUMFERENCE;
+        r.style.strokeDashoffset = '0';
+      }
+    }
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return m.toString().padStart(2, '0') + ':' + sec.toString().padStart(2, '0');
+    }
+
+    function renderTimer() {
+      const el = displayEl();
+      el.textContent = formatTime(remainingTime);
+
+      // Ring
+      const r = ringEl();
+      if (r && totalTime > 0) {
+        const progress = (totalTime - remainingTime) / totalTime;
+        r.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+      }
+
+      // Colors
+      el.classList.remove('timer__display--warning', 'timer__display--danger');
+      if (remainingTime <= 5 && remainingTime > 0) {
+        el.classList.add('timer__display--danger');
+      } else if (remainingTime <= 10) {
+        el.classList.add('timer__display--warning');
+      }
+    }
+
+    function setPreset(seconds) {
+      if (isRunning) pauseTimer();
+      remainingTime = seconds;
+      totalTime = seconds;
+      renderTimer();
+    }
+
+    function startTimer() {
+      if (remainingTime <= 0) {
+        remainingTime = 30;
+        totalTime = 30;
+      }
+      if (totalTime <= 0) totalTime = remainingTime;
+
+      isRunning = true;
+      document.getElementById('btn-start').textContent = 'PAUSE';
+
+      const audio = document.getElementById('beep');
+      if (audio) audio.load();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(function () {
+        remainingTime--;
+        renderTimer();
+        if (remainingTime <= 0) {
+          clearInterval(timerInterval);
+          isRunning = false;
+          document.getElementById('btn-start').textContent = 'START';
+          playBeep();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById('btn-start').textContent = 'START';
+    }
+
+    function toggleTimer() {
+      if (isRunning) pauseTimer();
+      else startTimer();
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      remainingTime = 0;
+      totalTime = 0;
+      renderTimer();
+      const r = ringEl();
+      if (r) r.style.strokeDashoffset = '0';
+    }
+
+    function playBeep() {
+      const audio = document.getElementById('beep');
+      if (!audio) return;
+      audio.currentTime = 0;
+      audio.play().catch(function () {
+        setTimeout(function () {
+          audio.currentTime = 0;
+          audio.play().catch(function () {});
+        }, 200);
+      });
+    }
+
+    /* ═══════════════════════════════════
+       RENDER DAYS + EXERCISES
+    ═══════════════════════════════════ */
+    let activeDay = 'd1';
+
+    function renderDaySelector() {
+      const sel = document.getElementById('daySelector');
+      sel.innerHTML = '';
+      PLAN.forEach(function (day, idx) {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn' + (idx === 0 ? ' day-btn--active' : '');
+        btn.textContent = day.label;
+        btn.dataset.day = day.id;
+        btn.addEventListener('click', function () { showDay(day.id); });
+        sel.appendChild(btn);
+      });
+    }
+
+    function showDay(dayId) {
+      activeDay = dayId;
+
+      // Update selector
+      document.querySelectorAll('.day-btn').forEach(function (btn) {
+        btn.classList.toggle('day-btn--active', btn.dataset.day === dayId);
+      });
+
+      renderRoutine(dayId);
+      loadProgress(dayId);
+      document.getElementById('btn-reset-day').style.display = 'block';
+    }
+
+    function renderRoutine(dayId) {
+      const day = PLAN.find(function (d) { return d.id === dayId; });
+      const container = document.getElementById('routine-content');
+
+      let html = '';
+
+      // Progress bar
+      html += '<div class="pro-progress"><div class="pro-progress__fill" id="progress-fill">0%</div></div>';
+
+      // Title
+      html += '<div class="pro-day-title">' + day.title + '</div>';
+
+      // Hints
+      html += '<div class="pro-hints">';
+      day.hints.forEach(function (h) { html += '<div class="pro-hint">• ' + h + '</div>'; });
+      html += '</div>';
+
+      // Blocks
+      day.blocks.forEach(function (block) {
+        html += '<div class="pro-block">';
+        html += '<div class="pro-block__title">' + block.name + '</div>';
+
+        block.items.forEach(function (item, itemIdx) {
+          html += '<div class="pro-exercise" id="ex-' + dayId + '-' + itemIdx + '">';
+          html += '<span class="pro-exercise__text">' + item.text + '</span>';
+          html += '<div class="pro-exercise__checks">';
+          for (var s = 0; s < item.sets; s++) {
+            html += '<input type="checkbox" class="pro-checkbox" data-day="' + dayId + '" />';
+          }
+          html += '</div></div>';
+        });
+
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+
+      // Bind checkboxes
+      container.querySelectorAll('.pro-checkbox').forEach(function (cb) {
+        cb.addEventListener('change', function () { updateProgress(dayId); });
+      });
+    }
+
+    /* ═══════════════════════════════════
+       PROGRESS + STORAGE
+    ═══════════════════════════════════ */
+    function updateProgress(dayId) {
+      const container = document.getElementById('routine-content');
+      const checkboxes = container.querySelectorAll('.pro-checkbox');
+      const exercises = container.querySelectorAll('.pro-exercise');
+
+      let completed = 0;
+      checkboxes.forEach(function (cb) { if (cb.checked) completed++; });
+
+      // Mark completed exercises
+      exercises.forEach(function (ex) {
+        const cbs = ex.querySelectorAll('.pro-checkbox');
+        var allDone = cbs.length > 0;
+        cbs.forEach(function (cb) { if (!cb.checked) allDone = false; });
+        if (allDone && cbs.length > 0) ex.classList.add('pro-exercise--done');
+        else ex.classList.remove('pro-exercise--done');
+      });
+
+      var pct = checkboxes.length === 0 ? 0 : Math.round((completed / checkboxes.length) * 100);
+      var fill = document.getElementById('progress-fill');
+      fill.style.width = pct + '%';
+      fill.textContent = pct + '%';
+
+      saveProgress(dayId);
+    }
+
+    function saveProgress(dayId) {
+      var container = document.getElementById('routine-content');
+      var checkboxes = container.querySelectorAll('.pro-checkbox');
+      var states = [];
+      checkboxes.forEach(function (cb) { states.push(cb.checked); });
+      try { localStorage.setItem('mfp_' + dayId, JSON.stringify(states)); } catch (e) {}
+    }
+
+    function loadProgress(dayId) {
+      try {
+        var saved = localStorage.getItem('mfp_' + dayId);
+        var container = document.getElementById('routine-content');
+        var checkboxes = container.querySelectorAll('.pro-checkbox');
+
+        if (saved) {
+          var states = JSON.parse(saved);
+          checkboxes.forEach(function (cb, idx) { cb.checked = !!states[idx]; });
+        } else {
+          checkboxes.forEach(function (cb) { cb.checked = false; });
+        }
+        updateProgress(dayId);
+      } catch (e) {}
+    }
+
+    function resetDay() {
+      var container = document.getElementById('routine-content');
+      var checkboxes = container.querySelectorAll('.pro-checkbox');
+      checkboxes.forEach(function (cb) { cb.checked = false; });
+      saveProgress(activeDay);
+      updateProgress(activeDay);
+    }
+
+    /* ═══════════════════════════════════
+       INIT
+    ═══════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', function () {
+      initRing();
+      renderTimer();
+      renderDaySelector();
+      showDay('d1');
+
+      document.getElementById('btn-start').addEventListener('click', toggleTimer);
+      document.getElementById('btn-reset').addEventListener('click', resetTimer);
+      document.getElementById('btn-reset-day').addEventListener('click', resetDay);
+
+      document.querySelectorAll('.btn--preset').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setPreset(parseInt(this.dataset.seconds));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
